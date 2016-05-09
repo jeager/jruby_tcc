@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Timespent:</strong>
+  <%= @execution.timespent %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @execution.status %>
+</p>
+
+<p>
+  <strong>Project:</strong>
+  <%= @execution.project.name %>
+</p>
+
+<%= link_to 'Edit', edit_project_execution_path(@execution.project, @execution) %> |
+<%= link_to 'Back', project_executions_path %>

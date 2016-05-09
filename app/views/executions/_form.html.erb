@@ -1,0 +1,21 @@
+<%= form_for([@project, @execution]) do |f| %>
+  <% if @execution.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@execution.errors.count, "error") %> prohibited this execution from being saved:</h2>
+
+      <ul>
+      <% @execution.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :timespent %><br>
+    <%= f.number_field :timespent %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
