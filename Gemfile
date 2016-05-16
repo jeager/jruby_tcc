@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+ruby '2.2.3', :engine => 'jruby', :engine_version => '9.0.5.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2'
@@ -28,6 +29,7 @@ gem 'devise'
 gem "carrierwave"
 gem "bootstrap-sass"
 gem "twitter-bootstrap-rails"
+gem "puma"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
