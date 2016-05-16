@@ -11,9 +11,11 @@
 </p>
 
 <p>
-  <strong>User:</strong>
-  <%= @project.user.email %>
+  <strong>Arquivo:</strong>
+  <%= link_to "Download Arquivo", @project.attachment_url %>
 </p>
+
+<%=render partial: "/executions/executions_list", locals: {:executions => @executions}%>
 
 <%= link_to 'Executar Projeto', new_project_execution_path(:project_id => @project.id) %> |
 <%= link_to 'Edit', edit_project_path(@project) %> |

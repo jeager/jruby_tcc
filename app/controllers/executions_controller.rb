@@ -30,7 +30,7 @@ class ExecutionsController < ApplicationController
     @execution = Execution.new(execution_params)
     @execution.project = @project
     @execution.status = "Pending"
-
+    puts MachineLearning.new.evaluate(@project.attachment_url)
     respond_to do |format|
       if @execution.save
         format.html { redirect_to [@project,@execution], notice: 'Execution was successfully created.' }

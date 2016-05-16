@@ -4,18 +4,19 @@ java_import 'weka.filters.Filter'
 java_import 'weka.attributeSelection.LinearForwardSelection'
 
 class MachineLearning
-	def open_dataset
-		dataset = Core::Parser.parse_ARFF("/home/jeager/TCC/fs_models/madelon/train.arff")
+	def open_dataset location
+		puts Rails.root.to_s + location.to_s
+		dataset = Core::Parser.parse_ARFF(Rails.root.join("public").to_s + location.to_s)
 	end
 
-	def evaluate
+	def evaluate location
 		# Evaluator
 		eval = Weka::Attribute_selection::Evaluator::CfsSubsetEval.new
 
 		# # Search algorithm
 		search = LinearForwardSelection.new
 
-		dataset = open_dataset
+		dataset = open_dataset(location)
 
 		filter = Weka::Filter::Supervised::Attribute::AttributeSelection.new
 
