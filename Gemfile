@@ -23,13 +23,25 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',                                 group: :doc
 
-gem 'ruby-band'
+#gem 'ruby-band'
+
+gem "jbundler"
 
 gem 'devise'
 gem "carrierwave"
 gem "bootstrap-sass"
 gem "twitter-bootstrap-rails"
 gem "puma"
+
+
+# group :development do
+# 	gem "ruby-band"
+# end
+
+group :production do
+	gem "ruby-band", :path => "https://github.com/jeager/ruby-band"
+end
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

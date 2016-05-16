@@ -270,6 +270,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   devise
   jbuilder (~> 2.0)
+  jbundler
   jquery-rails
   puma
   rails (= 4.2)
