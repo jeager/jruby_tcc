@@ -20,5 +20,9 @@
   <%= @execution.selected_features.nil? ? "Processando" : @execution.selected_features %>
 </p>
 
+<p>
+  <strong>Acuracia</strong>
+  <%= @execution.status.eql?("Pending") ? "Processando" : @execution.acuracy %>
+</p>
 <%= link_to 'Edit', edit_project_execution_path(@execution.project, @execution) %> |
 <%= link_to 'Back', project_executions_path %>

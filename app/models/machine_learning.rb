@@ -4,10 +4,14 @@ java_import 'weka.filters.Filter'
 java_import 'weka.classifiers.meta.AttributeSelectedClassifier'
 java_import 'weka.attributeSelection.LinearForwardSelection'
 java_import 'weka.attributeSelection.WrapperSubsetEval'
+java_import 'weka.classifiers.Evaluation'
+java_import 'weka.core.Instances'
 
 class MachineLearning
 	def open_dataset location
 		dataset = Core::Parser.parse_ARFF(Rails.root.join("public").to_s + location.to_s)
+		dataset.setClassIndex(dataset.numAttributes() - 1)
+		return dataset
 	end
 
 	def evaluate_by_filter location, evaluator, search_mode, filter
@@ -37,16 +41,15 @@ class MachineLearning
 
 	def evaluate_by_wrapper location
 		dataset = open_dataset(location)
-		dataset.setClassIndex(dataset.numAttributes() - 1);
 
 		search = LinearForwardSelection.new
-		base = Weka::Classifier::Lazy::IBk.new
+		base = Weka::Classifier::Lazy::IBk.new(1)
 
     filter = Weka::Filter::Supervised::Attribute::AttributeSelection.new
     wrapper = WrapperSubsetEval.new
     wrapper.setClassifier(base)
     wrapper.setFolds(10);
-    wrapper.setThreshold(0.001);
+    wrapper.setThreshold(0.001)
 
 
     filter.set do
@@ -56,5 +59,19 @@ class MachineLearning
 		end
 
 		return Filter.useFilter(dataset, filter)
+	end
+
+	def execute_with_knn instances
+		train_size = (instances.numInstances() * 0.66).round
+		test_size = instances.numInstances() - train_size
+ 		train = Instances.new(instances, 0, train_size)
+		test = Instances.new(instances, train_size, test_size)
+
+		classifier = Weka::Classifier::Lazy::IBk.new(1)
+		classifier.buildClassifier(train)
+		eval = Evaluation.new(train)
+ 		eval.evaluateModel(classifier, test)
+
+ 		return eval
 	end
 end

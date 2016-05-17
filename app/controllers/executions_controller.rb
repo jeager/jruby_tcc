@@ -40,6 +40,7 @@ class ExecutionsController < ApplicationController
         format.json { render json: @execution.errors, status: :unprocessable_entity }
       end
     end
+
     Thread.new do
       if(params[:feature_selection_tech].eql? 'Filter Method')
         results = MachineLearning.new.evaluate_by_filter(@project.attachment_url, 
@@ -48,14 +49,18 @@ class ExecutionsController < ApplicationController
         results.enumerateAttributes.each  do |i| 
           features << i.name
         end
-        @execution.update(:status => "Done", :selected_features => features.join(","), :timespent => DateTime.now.to_i - @execution.timespent)
+        @execution.update(:timespent => DateTime.now.to_i - @execution.timespent)
+        eval = MachineLearning.new.execute_with_knn(results)
+        @execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => (1 - eval.errorRate)*100)
       elsif (params[:feature_selection_tech].eql? 'Wrapper Method')
         results = MachineLearning.new.evaluate_by_wrapper(@project.attachment_url)
         features = []
         results.enumerateAttributes.each  do |i| 
           features << i.name
         end
-        @execution.update(:status => "Done", :selected_features => features.join(","), :timespent => DateTime.now.to_i - @execution.timespent)
+        @execution.update(:timespent => DateTime.now.to_i - @execution.timespent)
+        eval = MachineLearning.new.execute_with_knn(results)
+        @execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => (1 - eval.errorRate)*100)
       end
     end
   end
