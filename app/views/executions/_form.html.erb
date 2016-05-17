@@ -12,8 +12,8 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :timespent %><br>
-    <%= f.number_field :timespent %>
+    <%=label '', "Técnica de Seleção de Características"%><br>
+    <%=select_tag :feature_selection_tech, options_for_select(['Filter Method', 'Wrapper Method'])%>
   </div>
   <div class="actions">
     <%= f.submit %>

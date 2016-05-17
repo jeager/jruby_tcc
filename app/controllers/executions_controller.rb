@@ -30,7 +30,7 @@ class ExecutionsController < ApplicationController
     @execution = Execution.new(execution_params)
     @execution.project = @project
     @execution.status = "Pending"
-    puts MachineLearning.new.evaluate(@project.attachment_url)
+    @execution.timespent = DateTime.now.to_i
     respond_to do |format|
       if @execution.save
         format.html { redirect_to [@project,@execution], notice: 'Execution was successfully created.' }
@@ -38,6 +38,24 @@ class ExecutionsController < ApplicationController
       else
         format.html { render :new }
         format.json { render json: @execution.errors, status: :unprocessable_entity }
+      end
+    end
+    Thread.new do
+      if(params[:feature_selection_tech].eql? 'Filter Method')
+        results = MachineLearning.new.evaluate_by_filter(@project.attachment_url, 
+          "CfsSubsetEval", "LinearForwardSelection", "AttributeSelection")
+        features = []
+        results.enumerateAttributes.each  do |i| 
+          features << i.name
+        end
+        @execution.update(:status => "Done", :selected_features => features.join(","), :timespent => DateTime.now.to_i - @execution.timespent)
+      elsif (params[:feature_selection_tech].eql? 'Wrapper Method')
+        results = MachineLearning.new.evaluate_by_wrapper(@project.attachment_url)
+        features = []
+        results.enumerateAttributes.each  do |i| 
+          features << i.name
+        end
+        @execution.update(:status => "Done", :selected_features => features.join(","), :timespent => DateTime.now.to_i - @execution.timespent)
       end
     end
   end
@@ -74,6 +92,6 @@ class ExecutionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def execution_params
-      params.require(:execution).permit(:timespent)
+      #params.require(:execution).permit(:timespent)
     end
 end

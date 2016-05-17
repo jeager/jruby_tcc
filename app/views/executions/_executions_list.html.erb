@@ -11,7 +11,7 @@
   <tbody>
     <% @executions.each do |execution| %>
       <tr>
-        <td><%= execution.timespent %></td>
+        <td><%=execution.status.eql?("Pending") ? "Processando" : Time.at(execution.timespent).utc.strftime("%H:%M:%S") %></td>
         <td><%= execution.status %></td>
         <td><%= execution.project.name %></td>
         <td><%= link_to 'Show', project_execution_path(execution.project, execution) %></td>

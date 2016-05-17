@@ -2,7 +2,7 @@
 
 <p>
   <strong>Timespent:</strong>
-  <%= @execution.timespent %>
+  <%= @execution.status.eql?("Pending") ? "Processando" : Time.at(@execution.timespent).utc.strftime("%H:%M:%S")%>
 </p>
 
 <p>
@@ -13,6 +13,11 @@
 <p>
   <strong>Project:</strong>
   <%= @execution.project.name %>
+</p>
+
+<p>
+  <strong>Características Selecionadas</strong>
+  <%= @execution.selected_features.nil? ? "Processando" : @execution.selected_features %>
 </p>
 
 <%= link_to 'Edit', edit_project_execution_path(@execution.project, @execution) %> |
