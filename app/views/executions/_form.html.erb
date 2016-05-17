@@ -13,7 +13,7 @@
 
   <div class="field">
     <%=label '', "Técnica de Seleção de Características"%><br>
-    <%=select_tag :feature_selection_tech, options_for_select(['Filter Method', 'Wrapper Method'])%>
+    <%=f.select :method, options_for_select(['Filter Method', 'Wrapper Method', 'Relief-F'])%>
   </div>
   <div class="actions">
     <%= f.submit %>

@@ -6,6 +6,8 @@ java_import 'weka.attributeSelection.LinearForwardSelection'
 java_import 'weka.attributeSelection.WrapperSubsetEval'
 java_import 'weka.classifiers.Evaluation'
 java_import 'weka.core.Instances'
+java_import 'weka.attributeSelection.ReliefFAttributeEval'
+java_import 'weka.attributeSelection.Ranker'
 
 class MachineLearning
 	def open_dataset location
@@ -14,21 +16,14 @@ class MachineLearning
 		return dataset
 	end
 
-	def evaluate_by_filter location, evaluator, search_mode, filter
+	def evaluate_by_filter dataset
 		# Evaluator
-		if(evaluator.eql? "CfsSubsetEval")
-			eval = Weka::Attribute_selection::Evaluator::CfsSubsetEval.new
-		end
+		eval = Weka::Attribute_selection::Evaluator::CfsSubsetEval.new
 
 		# # Search algorithm
-		if(search_mode.eql? "LinearForwardSelection")
-			search = LinearForwardSelection.new
-		end
+		search = LinearForwardSelection.new
 
-		dataset = open_dataset(location)
-		if(filter.eql? "AttributeSelection")
-			filter = Weka::Filter::Supervised::Attribute::AttributeSelection.new
-		end
+		filter = Weka::Filter::Supervised::Attribute::AttributeSelection.new
 
 		filter.set do
 		  evaluator eval
@@ -39,8 +34,7 @@ class MachineLearning
 		return Filter.useFilter(dataset, filter)
 	end
 
-	def evaluate_by_wrapper location
-		dataset = open_dataset(location)
+	def evaluate_by_wrapper dataset
 
 		search = LinearForwardSelection.new
 		base = Weka::Classifier::Lazy::IBk.new(1)
@@ -61,6 +55,24 @@ class MachineLearning
 		return Filter.useFilter(dataset, filter)
 	end
 
+	def evaluate_by_relief dataset
+		# Evaluator
+		eval = ReliefFAttributeEval.new
+
+		# # Search algorithm
+		search = Ranker.new
+
+		filter = Weka::Filter::Supervised::Attribute::AttributeSelection.new
+
+		filter.set do
+		  evaluator eval
+		  search search
+		  data dataset
+		end
+
+		return Filter.useFilter(dataset, filter)
+	end
+
 	def execute_with_knn instances
 		train_size = (instances.numInstances() * 0.66).round
 		test_size = instances.numInstances() - train_size
@@ -73,5 +85,25 @@ class MachineLearning
  		eval.evaluateModel(classifier, test)
 
  		return eval
+	end
+
+	def create_thread execution, project
+		Thread.new do
+			dataset = open_dataset(project.attachment_url)
+			if(execution.method.eql? 'Filter Method')
+	  		results = MachineLearning.new.evaluate_by_filter(dataset)
+	  	elsif (execution.method.eql? 'Wrapper Method')
+	  		results = MachineLearning.new.evaluate_by_wrapper(dataset)
+	  	elsif (execution.method.eql? 'Relief-F')
+	  		results = MachineLearning.new.evaluate_by_relief(dataset)
+	  	end
+	  	features = []
+      results.enumerateAttributes.each  do |f| 
+        features << f.name
+    	end
+		  execution.update(:timespent => DateTime.now.to_i - execution.timespent)
+		  eval = MachineLearning.new.execute_with_knn(results)
+		  execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => (1 - eval.errorRate)*100)
+		end
 	end
 end

@@ -4,7 +4,8 @@ class ExecutionsController < ApplicationController
   # GET /executions
   # GET /executions.json
   def index
-    @executions = Execution.all
+    @project = Project.find_by_id(params[:project_id])
+    @executions = @project.executions.order(created_at: :desc)
   end
 
   # GET /executions/1
@@ -41,28 +42,8 @@ class ExecutionsController < ApplicationController
       end
     end
 
-    Thread.new do
-      if(params[:feature_selection_tech].eql? 'Filter Method')
-        results = MachineLearning.new.evaluate_by_filter(@project.attachment_url, 
-          "CfsSubsetEval", "LinearForwardSelection", "AttributeSelection")
-        features = []
-        results.enumerateAttributes.each  do |i| 
-          features << i.name
-        end
-        @execution.update(:timespent => DateTime.now.to_i - @execution.timespent)
-        eval = MachineLearning.new.execute_with_knn(results)
-        @execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => (1 - eval.errorRate)*100)
-      elsif (params[:feature_selection_tech].eql? 'Wrapper Method')
-        results = MachineLearning.new.evaluate_by_wrapper(@project.attachment_url)
-        features = []
-        results.enumerateAttributes.each  do |i| 
-          features << i.name
-        end
-        @execution.update(:timespent => DateTime.now.to_i - @execution.timespent)
-        eval = MachineLearning.new.execute_with_knn(results)
-        @execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => (1 - eval.errorRate)*100)
-      end
-    end
+    MachineLearning.new.create_thread @execution, @project
+    
   end
 
   # PATCH/PUT /executions/1
@@ -97,6 +78,6 @@ class ExecutionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def execution_params
-      #params.require(:execution).permit(:timespent)
+      params.require(:execution).permit(:method)
     end
 end
