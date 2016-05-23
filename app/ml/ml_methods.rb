@@ -33,7 +33,6 @@ class MlMethods
 		  search search
 		  data dataset
 		end
-
 		return Filter.useFilter(dataset, filter)
 	end
 
@@ -95,26 +94,27 @@ class MlMethods
 			Thread.new do				
 				dataset = open_dataset(execution.project.attachment_url)
 				if(execution.method.eql? 'Filter Method')
-		  			results = MachineLearning.new.evaluate_by_filter(dataset)
-		  		elsif (execution.method.eql? 'Wrapper Method')
-		  			results = MachineLearning.new.evaluate_by_wrapper(dataset)
-		  		elsif (execution.method.eql? 'Relief-F')
-		  			results = MachineLearning.new.evaluate_by_relief(dataset)
-		  		end
-		  		features = []
-	      		results.enumerateAttributes.each  do |f| 
-	        		features << f.name
-	    		end
-			  	execution.update(:timespent => DateTime.now.to_i - execution.timespent)
-			  	eval = MachineLearning.new.execute_with_knn(results)
-			  	execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => (1 - eval.errorRate)*100)
+		  		results = evaluate_by_filter(dataset)
+		  	elsif (execution.method.eql? 'Wrapper Method')
+		  		results = evaluate_by_wrapper(dataset)
+		  	elsif (execution.method.eql? 'Relief-F')
+		  		results = evaluate_by_relief(dataset)
+		  	end
+		  	features = []
+	      results.enumerateAttributes.each  do |f| 
+	      	features << f.name
+	    	end
+			  execution.update(:timespent => DateTime.now.to_i - execution.timespent)
+			  eval = execute_with_knn(results)
+			  puts eval.correct
+			  puts eval.numInstances
+			  execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => ((eval.correct/eval.numInstances)*100))
 			end
-		rescue Exception => e
-			puts e
+		rescue
 			if(exec.status.eql? "Pendig")
 				@execution.update(:status =>'Falhou, tentando novamente')
 				@execution.reload
-				MlMethods.new.create_thread @execution
+				create_thread @execution
 			elsif (exec.status.eql? "Falhou, tentando novamente")
 				@execution.update(:status =>'Falhou.')
 			end

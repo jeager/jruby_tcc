@@ -41,7 +41,6 @@ class ExecutionsController < ApplicationController
         format.json { render json: @execution.errors, status: :unprocessable_entity }
       end
     end
-
     MlMethods.new.create_thread @execution
   end
 
