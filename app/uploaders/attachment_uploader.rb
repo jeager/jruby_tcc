@@ -9,6 +9,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   # Choose what kind of storage to use for this uploader:
   storage :file
   # storage :fog
+  after :store,  :convert_to_arff
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -34,6 +35,23 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   # def scale(width, height)
   #   # do something
   # end
+
+  def convert_to_arff(file)
+    if(original_filename.include? ".csv")
+      return CarrierWave::SanitizedFile.new(MlMethods.new.convert_csv_to_arff(@file.to_file, store_dir))
+    else
+      puts "ASDHUIASHDUIDHUIASDASUD"
+    end
+    #MlMethods.new.convert_csv_to_arff self
+  end
+
+  def filename 
+    if(File.basename(@file.to_file).include? ".csv")
+      File.basename(@file.to_file, ".csv") + ".arff"
+    else
+      original_filename
+    end
+  end
 
   # Create different versions of your uploaded files:
   # version :thumb do

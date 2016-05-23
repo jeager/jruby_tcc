@@ -42,8 +42,7 @@ class ExecutionsController < ApplicationController
       end
     end
 
-    MachineLearning.new.create_thread @execution, @project
-    
+    MlMethods.new.create_thread @execution
   end
 
   # PATCH/PUT /executions/1

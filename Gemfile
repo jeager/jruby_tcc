@@ -39,7 +39,7 @@ gem "puma"
 # end
 
 # group :production do
-# 	gem "ruby-band", :git => "https://github.com/jeager/ruby-band.git", :branch => 'master'
+# 	
 # end
 
 

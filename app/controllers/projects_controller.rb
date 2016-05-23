@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    @projects = Project.all.order(created_at: :desc)
   end
 
   # GET /projects/1
@@ -33,7 +33,8 @@ class ProjectsController < ApplicationController
         format.html { redirect_to @project, notice: 'Project was successfully created.' }
         format.json { render :show, status: :created, location: @project }
       else
-        format.html { render :new }
+        @project.errors.add(:attachment, "Arff file não compativel.")
+        format.html { render :new}
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
     end
@@ -73,4 +74,5 @@ class ProjectsController < ApplicationController
     def project_params
       params.require(:project).permit(:name, :description, :attachment)
     end
+
 end
