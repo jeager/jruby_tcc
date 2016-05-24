@@ -13,6 +13,7 @@ class Project < ActiveRecord::Base
 				true
 			end
 		rescue Exception => e
+			self.errors.add(:attachment, "Arff file não compativel.")
 			false
 		end
 	end

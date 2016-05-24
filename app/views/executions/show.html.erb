@@ -1,33 +1,41 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="col-md-6 col-md-offset-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">Execução</div>
+      <div class="panel-body">
+        <p>
+          <strong>Tempo Gasto:</strong>
+          <%= @execution.status.eql?("Pending") ? "Processando" : Time.at(@execution.timespent).utc.strftime("%H:%M:%S")%>
+        </p>
 
-<p>
-  <strong>Timespent:</strong>
-  <%= @execution.status.eql?("Pending") ? "Processando" : Time.at(@execution.timespent).utc.strftime("%H:%M:%S")%>
-</p>
+        <p>
+          <strong>Status:</strong>
+          <%= @execution.status %>
+        </p>
 
-<p>
-  <strong>Status:</strong>
-  <%= @execution.status %>
-</p>
+        <p>
+          <strong>Projeto:</strong>
+          <%= @execution.project.name %>
+        </p>
 
-<p>
-  <strong>Project:</strong>
-  <%= @execution.project.name %>
-</p>
+        <p>
+          <strong>Metodo:</strong>
+          <%= @execution.method %>
+        </p>
 
-<p>
-  <strong>Metodo:</strong>
-  <%= @execution.method %>
-</p>
+        <p>
+          <strong>Características Selecionadas</strong>
+          <%= @execution.selected_features.nil? ? "Processando" : @execution.selected_features %>
+        </p>
 
-<p>
-  <strong>Características Selecionadas</strong>
-  <%= @execution.selected_features.nil? ? "Processando" : @execution.selected_features %>
-</p>
+        <p>
+          <strong>Acuracia</strong>
+          <%= @execution.status.eql?("Pending") ? "Processando" : @execution.acuracy %>
+        </p>
+        <%= button_to 'Voltar', project_path(:id => @execution.project.id), method: :get, class: "btn btn-default" %>
+      </div>
+    </div>
 
-<p>
-  <strong>Acuracia</strong>
-  <%= @execution.status.eql?("Pending") ? "Processando" : @execution.acuracy %>
-</p>
-<%= link_to 'Edit', edit_project_execution_path(@execution.project, @execution) %> |
-<%= link_to 'Back', project_executions_path %>
+    
+  </div>
+</div>

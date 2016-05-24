@@ -4,13 +4,13 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all.order(created_at: :desc)
+    @projects = Project.all.paginate(:page => params[:page], :per_page => 5).order(created_at: :desc)
   end
 
   # GET /projects/1
   # GET /projects/1.json
   def show
-    @executions = @project.executions
+    @executions = @project.executions.paginate(:page => params[:page], :per_page => 5).order(created_at: :desc)
   end
 
   # GET /projects/new
@@ -30,10 +30,11 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
-        format.html { redirect_to @project, notice: 'Project was successfully created.' }
+        flash[:notice] = 'Projeto criado com sucesso.'
+        format.html { redirect_to @project}
         format.json { render :show, status: :created, location: @project }
       else
-        @project.errors.add(:attachment, "Arff file não compativel.")
+        flash[:warning] = 'Ocorreu um erro ao salvar'
         format.html { render :new}
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
@@ -45,9 +46,11 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if @project.update(project_params)
-        format.html { redirect_to @project, notice: 'Project was successfully updated.' }
+        flash[:notice] = 'Projeto atualizado com sucesso'
+        format.html { redirect_to @project }
         format.json { render :show, status: :ok, location: @project }
       else
+        flash[:warning] = 'Ocorreu um erro ao salvar'
         format.html { render :edit }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end

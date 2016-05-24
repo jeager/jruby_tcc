@@ -32,6 +32,7 @@ gem "carrierwave"
 gem "bootstrap-sass"
 gem "twitter-bootstrap-rails"
 gem "puma"
+gem 'will_paginate', '~> 3.1.0'
 
 
 # group :development do

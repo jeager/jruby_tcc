@@ -8,12 +8,20 @@
 </head>
 <body>
 
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
-<%= flash[:warning] %>
-
-
-<%= yield %>
-
+<%=render partial: "layouts/header"%>
+	<%if(flash[:warning]) %>
+		<div class="alert alert-danger" role="alert">
+			<strong><%=flash[:warning]%></strong>
+		</div>
+	<%end%>
+	<%if(flash[:notice]) %>
+		<div class="alert alert-success" role="alert">
+			<strong><%=flash[:notice]%></strong>
+		</div>
+	<%end%>
+<div class="container">
+	<%= yield %>
+</div>
+<%=render partial: "layouts/footer"%>
 </body>
 </html>

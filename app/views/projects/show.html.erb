@@ -1,22 +1,32 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
 
-<p>
-  <strong>Name:</strong>
-  <%= @project.name %>
-</p>
+		<p>
+		<h4>
+		  <strong>Nome:</strong>
+		  <%= @project.name %>
+		</h4>
+		</p>
 
-<p>
-  <strong>Description:</strong>
-  <%= @project.description %>
-</p>
+		<p>
+		<h5>
+		  <strong>Descrição:</strong>
+		  <%= @project.description %>
+		</h5>
+		</p>
 
-<p>
-  <strong>Arquivo:</strong>
-  <%= link_to "Download Arquivo", @project.attachment_url %>
-</p>
+		<p>
+		<h5>
+		  <strong>Arquivo:</strong>
+		  <%= link_to File.basename(@project.attachment.to_s), @project.attachment_url%>
+		</h5>
+		</p>
 
-<%=render partial: "/executions/executions_list", locals: {:executions => @executions}%>
-
-<%= link_to 'Executar Projeto', new_project_execution_path(:project_id => @project.id) %> |
-<%= link_to 'Edit', edit_project_path(@project) %> |
-<%= link_to 'Back', projects_path %>
+		<%=render partial: "/executions/executions_list", locals: {:executions => @executions}%>
+		<div class="col-md-offset-4">
+			<%= button_to 'Executar Projeto', new_project_execution_path(:project_id => @project.id), class: "btn btn-success", method: :get %> |
+			<%= button_to 'Editar', edit_project_path(@project), class: "btn btn-warning", method: :get %> |
+			<%= button_to 'Voltar', projects_path, class: "btn btn-default", method: :get %>
+		</div>
+	</div>
+</div>

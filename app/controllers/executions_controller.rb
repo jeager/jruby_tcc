@@ -1,12 +1,6 @@
 class ExecutionsController < ApplicationController
   before_action :set_execution, only: [:show, :edit, :update, :destroy]
 
-  # GET /executions
-  # GET /executions.json
-  def index
-    @project = Project.find_by_id(params[:project_id])
-    @executions = @project.executions.order(created_at: :desc)
-  end
 
   # GET /executions/1
   # GET /executions/1.json
@@ -17,11 +11,8 @@ class ExecutionsController < ApplicationController
   def new
     @execution = Execution.new
     @project = Project.find_by_id(params[:project_id])
-  end
-
-  # GET /executions/1/edit
-  def edit
-    @project = Project.find_by_id(params[:project_id])
+    @description = Utils.get_description "Filter Method"
+    @method = "Filter Method"
   end
 
   # POST /executions
@@ -34,9 +25,11 @@ class ExecutionsController < ApplicationController
     @execution.timespent = DateTime.now.to_i
     respond_to do |format|
       if @execution.save
-        format.html { redirect_to [@project,@execution], notice: 'Execution was successfully created.' }
+        flash[:notice] = 'Execution was successfully created.'
+        format.html { redirect_to [@project,@execution]}
         format.json { render :show, status: :created, location: @execution }
       else
+        flash[:warning] = 'Houveram erros durante a criação da execução.'
         format.html { render :new }
         format.json { render json: @execution.errors, status: :unprocessable_entity }
       end
@@ -49,12 +42,22 @@ class ExecutionsController < ApplicationController
   def update
     respond_to do |format|
       if @execution.update(execution_params)
-        format.html { redirect_to [@execution.project,@execution], notice: 'Execution was successfully updated.' }
+        flash[:notice] = 'Execução não atualizada'
+        format.html { redirect_to [@execution.project,@execution]}
         format.json { render :show, status: :ok, location: @execution }
       else
+        flash[:warning] = 'Ocorreram erros'
         format.html { render :edit }
         format.json { render json: @execution.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def set_method_description
+    @description = Utils.get_description params[:execution][:method]
+    @method = params[:execution][:method]
+    respond_to do |format|
+      format.js{}
     end
   end
 
@@ -62,8 +65,9 @@ class ExecutionsController < ApplicationController
   # DELETE /executions/1.json
   def destroy
     @execution.destroy
+    flash[:notice] = 'Execução removida com sucesso' 
     respond_to do |format|
-      format.html { redirect_to project_executions_url, notice: 'Execution was successfully destroyed.' }
+      format.html { redirect_to project_executions_url}
       format.json { head :no_content }
     end
   end

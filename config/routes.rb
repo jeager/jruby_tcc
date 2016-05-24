@@ -2,9 +2,12 @@ Rails.application.routes.draw do
 
   devise_for :users
 
+  get "executions/set_method_description", to: "executions#set_method_description", as: "set_method_descritpion"
+  
   resources :projects do
-    resources :executions      
+    resources :executions, except: [:edit, :index]      
   end
+
   root 'home#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

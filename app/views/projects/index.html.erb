@@ -1,31 +1,33 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
 
-<h1>Listing Projects</h1>
+    <h1>Listando Projetos</h1>
 
-<table border="1">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>User</th>
-      <th>Opções</th>
-    </tr>
-  </thead>
+    <table class="table" border="1">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th class="col-md-5">Description</th>
+          <th class="col-md-4">Opções</th>
+        </tr>
+      </thead>
 
-  <tbody>
-    <% @projects.each do |project| %>
-      <tr>
-        <td><%= project.name %></td>
-        <td><%= project.description %></td>
-        <td><%= project.user.email %></td>
-        <td><%= link_to 'Show', project %> | 
-        <%= link_to 'Edit', edit_project_path(project) %> | 
-        <%= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Project', new_project_path %>
+      <tbody>
+        <% @projects.each do |project| %>
+          <tr>
+            <td><%= project.name %></td>
+            <td><%= project.description %></td>
+            <td><%= button_to 'Show', project, :method => :get, class: "btn btn-default"%>  
+            <%= button_to 'Edit', edit_project_path(project), :method => :get, class: "btn btn-warning" %> 
+            <%= button_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= will_paginate @projects, class: "flickr_pagination" %>
+    <br>
+    <div class="col-md-offset-5">
+    <%= button_to 'Novo Projeto', new_project_path, :method => :get, class: "btn btn-primary" %>
+    </div>
+  </div>
+</div>

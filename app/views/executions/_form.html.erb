@@ -10,12 +10,13 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
+  <div class="form-group">
     <%=label '', "Técnica de Seleção de Características"%><br>
-    <%=f.select :method, options_for_select(['Filter Method', 'Wrapper Method', 'Relief-F'])%>
+    <%=f.select :method, options_for_select(['Filter Method', 'Wrapper Method', 'Relief-F']),{}, {data: {remote: true, url: url_for(controller: :executions, action: :set_method_description)}, class: 'btn btn-default'}%>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit class: "btn btn-success" %>
+    <%= link_to 'Voltar', project_executions_path, class: "btn btn-default" %>
   </div>
 <% end %>
+
