@@ -1,1 +1,6 @@
-<h1> HOME </h1>
+<%if user_signed_in?%>
+	<h1>Listando Últimas Execuções</h1>	
+	<%=render partial: 'executions/executions_list', locals: {executions: @executions}%>
+<%else%>
+	<h1> HOME </h1>
+<%end%>

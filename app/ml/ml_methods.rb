@@ -121,8 +121,15 @@ class MlMethods
 		end
 	end
 
+	def check_csv csv
+		loader = CSVLoader.new
+    loader.setSource(java.io.File.new(csv))
+    data = loader.getDataSet
+	end
+
 	def convert_csv_to_arff csv, file_path
 		#load CSV
+		puts csv.path.to_s
     loader = CSVLoader.new
     loader.setSource(java.io.File.new(csv.path.to_s))
     data = loader.getDataSet

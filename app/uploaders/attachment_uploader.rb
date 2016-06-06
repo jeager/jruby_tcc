@@ -39,8 +39,6 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   def convert_to_arff(file)
     if(original_filename.include? ".csv")
       return CarrierWave::SanitizedFile.new(MlMethods.new.convert_csv_to_arff(@file.to_file, store_dir))
-    else
-      puts "ASDHUIASHDUIDHUIASDASUD"
     end
     #MlMethods.new.convert_csv_to_arff self
   end
