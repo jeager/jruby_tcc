@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160517144145) do
+ActiveRecord::Schema.define(version: 20160617210103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(version: 20160517144145) do
     t.string   "selected_features"
     t.float    "acuracy"
     t.string   "method"
+    t.integer  "class_index"
+    t.string   "class_name"
+    t.float    "initial_accuracy"
   end
 
   add_index "executions", ["project_id"], name: "index_executions_on_project_id", using: :btree

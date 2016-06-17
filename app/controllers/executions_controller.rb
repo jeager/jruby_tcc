@@ -23,18 +23,35 @@ class ExecutionsController < ApplicationController
     @execution.project = @project
     @execution.status = "Pending"
     @execution.timespent = DateTime.now.to_i
+    dataset = MlMethods.new.open_dataset(@execution.project.attachment_url)
+    attribute = dataset.attribute(@execution.class_name)
+    save = true
+    if(!attribute.nil?)
+      dataset.setClass(attribute)
+    else
+      save = false
+    end
     respond_to do |format|
-      if @execution.save
-        flash[:notice] = 'Execution was successfully created.'
-        format.html { redirect_to [@project,@execution]}
-        format.json { render :show, status: :created, location: @execution }
+      if save
+        if @execution.save
+          MlMethods.new.create_thread @execution
+          flash[:notice] = 'Execution was successfully created.'
+          format.html { redirect_to [@project,@execution]}
+          format.json { render :show, status: :created, location: @execution }
+        else
+          flash[:warning] = 'Houveram erros durante a criação da execução.'
+          format.html { render :new }
+          format.json { render json: @execution.errors, status: :unprocessable_entity }
+        end
       else
         flash[:warning] = 'Houveram erros durante a criação da execução.'
-        format.html { render :new }
-        format.json { render json: @execution.errors, status: :unprocessable_entity }
+        @execution.errors.add(:class_name, "Classe não encontrada.")
+          format.html { @description = Utils.get_description "Filter Method"
+                        @method = "Filter Method"
+                        render :new }
+          format.json { render json: @execution.errors, status: :unprocessable_entity }
       end
     end
-    MlMethods.new.create_thread @execution
   end
 
   # PATCH/PUT /executions/1
@@ -80,6 +97,6 @@ class ExecutionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def execution_params
-      params.require(:execution).permit(:method)
+      params.require(:execution).permit(:method, :class_name)
     end
 end

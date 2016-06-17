@@ -35,9 +35,10 @@ gem "puma"
 gem 'will_paginate', '~> 3.1.0'
 
 
-# group :development do
-# 	gem "ruby-band"
-# end
+group :development do
+	gem "rails-erd"
+	gem 'railroady'
+end
 
 # group :production do
 # 	

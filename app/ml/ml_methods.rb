@@ -6,7 +6,10 @@ java_import 'weka.classifiers.meta.AttributeSelectedClassifier'
 java_import 'weka.attributeSelection.LinearForwardSelection'
 java_import 'weka.attributeSelection.WrapperSubsetEval'
 java_import 'weka.classifiers.Evaluation'
+java_import 'weka.filters.unsupervised.attribute.ReplaceMissingValues'
+java_import 'weka.filters.unsupervised.attribute.Remove'
 java_import 'weka.core.Instances'
+java_import 'weka.core.Attribute'
 java_import 'weka.core.converters.ArffSaver'
 java_import 'weka.core.converters.CSVLoader'
 java_import 'weka.attributeSelection.ReliefFAttributeEval'
@@ -15,7 +18,6 @@ java_import 'weka.attributeSelection.Ranker'
 class MlMethods
 	def open_dataset location
 		dataset = Core::Parser.parse_ARFF(Rails.root.join("public").to_s + location.to_s)
-		dataset.setClassIndex(dataset.numAttributes() - 1)
 		return dataset
 	end
 
@@ -93,12 +95,23 @@ class MlMethods
 		begin
 			Thread.new do				
 				dataset = open_dataset(execution.project.attachment_url)
+				attribute = dataset.attribute(execution.class_name)
+				dataset.setClass(attribute)
+
+				dataset.deleteStringAttributes
+
+				filter = ReplaceMissingValues.new
+				filter.setInputFormat(dataset);
+				no_blanks_dataset = Filter.useFilter(dataset, filter);
+				initial_eval = execute_with_knn(no_blanks_dataset)
+				execution.update(:initial_accuracy => ((initial_eval.correct/initial_eval.numInstances)*100))
+
 				if(execution.method.eql? 'Filter Method')
-		  		results = evaluate_by_filter(dataset)
+		  		results = evaluate_by_filter(no_blanks_dataset)
 		  	elsif (execution.method.eql? 'Wrapper Method')
-		  		results = evaluate_by_wrapper(dataset)
+		  		results = evaluate_by_wrapper(no_blanks_dataset)
 		  	elsif (execution.method.eql? 'Relief-F')
-		  		results = evaluate_by_relief(dataset)
+		  		results = evaluate_by_relief(no_blanks_dataset)
 		  	end
 		  	features = []
 	      results.enumerateAttributes.each  do |f| 
@@ -106,8 +119,6 @@ class MlMethods
 	    	end
 			  execution.update(:timespent => DateTime.now.to_i - execution.timespent)
 			  eval = execute_with_knn(results)
-			  puts eval.correct
-			  puts eval.numInstances
 			  execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => ((eval.correct/eval.numInstances)*100))
 			end
 		rescue

@@ -23,8 +23,8 @@
     <%= f.label :attachment, "Arquivo .arff .csv"%>
     <%= f.file_field :attachment %>
   </div>
-  <div class="form-group">
+  <div align="center" class="form-group">
     <%= f.submit class: "btn btn-success" %>
-    <%= link_to 'Voltar', projects_path, method: :get, class: "btn btn-primary col-md-offset-8" %>
+    <%= link_to 'Voltar', projects_path, method: :get, class: "btn btn-primary" %>
   </div>
 <% end %>

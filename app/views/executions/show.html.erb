@@ -29,6 +29,11 @@
         </p>
 
         <p>
+          <strong>Acuracia Inicial</strong>
+          <%= @execution.status.eql?("Pending") ? "Processando" : @execution.initial_accuracy %>
+        </p>
+
+        <p>
           <strong>Acuracia</strong>
           <%= @execution.status.eql?("Pending") ? "Processando" : @execution.acuracy %>
         </p>
