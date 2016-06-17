@@ -46,8 +46,8 @@ class ExecutionsController < ApplicationController
       else
         flash[:warning] = 'Houveram erros durante a criação da execução.'
         @execution.errors.add(:class_name, "Classe não encontrada.")
-          format.html { @description = Utils.get_description "Filter Method"
-                        @method = "Filter Method"
+          format.html { @description = Utils.get_description @execution.method
+                        @method = @execution.method
                         render :new }
           format.json { render json: @execution.errors, status: :unprocessable_entity }
       end

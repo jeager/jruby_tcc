@@ -12,7 +12,7 @@
   <% end %>
   <div class="form-group">
     <%=label '', "Técnica de Seleção de Características"%><br>
-    <%=f.select :method, options_for_select(['Filter Method', 'Wrapper Method', 'Relief-F']),{}, {data: {remote: true, url: url_for(controller: :executions, action: :set_method_description)}, class: 'btn btn-default'}%>
+    <%=f.select :method, options_for_select(['Filter Method', 'Wrapper Method', 'Relief-F', 'Decision Tree']),{}, {data: {remote: true, url: url_for(controller: :executions, action: :set_method_description)}, class: 'btn btn-default'}%>
   </div>
   <div class="form-group">
     <%=label '', "Nome da Classe Objetivo"%><br>

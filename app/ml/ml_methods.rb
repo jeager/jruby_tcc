@@ -5,7 +5,9 @@ java_import 'weka.filters.Filter'
 java_import 'weka.classifiers.meta.AttributeSelectedClassifier'
 java_import 'weka.attributeSelection.LinearForwardSelection'
 java_import 'weka.attributeSelection.WrapperSubsetEval'
+java_import 'weka.attributeSelection.ClassifierSubsetEval'
 java_import 'weka.classifiers.Evaluation'
+java_import 'weka.classifiers.trees.J48'
 java_import 'weka.filters.unsupervised.attribute.ReplaceMissingValues'
 java_import 'weka.filters.unsupervised.attribute.Remove'
 java_import 'weka.core.Instances'
@@ -77,6 +79,25 @@ class MlMethods
 		return Filter.useFilter(dataset, filter)
 	end
 
+	def evaluate_by_dtm dataset
+		# Evaluator
+		eval = ClassifierSubsetEval.new
+		classifier = J48.new
+		eval.setClassifier(classifier)
+		# # Search algorithm
+		search = LinearForwardSelection.new
+
+		filter = Weka::Filter::Supervised::Attribute::AttributeSelection.new
+
+		filter.set do
+		  evaluator eval
+		  search search
+		  data dataset
+		end
+
+		return Filter.useFilter(dataset, filter)
+	end
+
 	def execute_with_knn instances
 		train_size = (instances.numInstances() * 0.66).round
 		test_size = instances.numInstances() - train_size
@@ -105,6 +126,8 @@ class MlMethods
 				no_blanks_dataset = Filter.useFilter(dataset, filter);
 				initial_eval = execute_with_knn(no_blanks_dataset)
 				execution.update(:initial_accuracy => ((initial_eval.correct/initial_eval.numInstances)*100))
+				puts "corrects" + initial_eval.correct.to_s
+				puts "total" + initial_eval.numInstances.to_s
 
 				if(execution.method.eql? 'Filter Method')
 		  		results = evaluate_by_filter(no_blanks_dataset)
@@ -112,6 +135,8 @@ class MlMethods
 		  		results = evaluate_by_wrapper(no_blanks_dataset)
 		  	elsif (execution.method.eql? 'Relief-F')
 		  		results = evaluate_by_relief(no_blanks_dataset)
+		  	elsif (execution.method.eql? 'Decision Tree')
+		  		results = evaluate_by_dtm(no_blanks_dataset)
 		  	end
 		  	features = []
 	      results.enumerateAttributes.each  do |f| 
@@ -119,7 +144,10 @@ class MlMethods
 	    	end
 			  execution.update(:timespent => DateTime.now.to_i - execution.timespent)
 			  eval = execute_with_knn(results)
+			  puts "corrects" + initial_eval.correct.to_s
+				puts "total" + initial_eval.numInstances.to_s
 			  execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => ((eval.correct/eval.numInstances)*100))
+
 			end
 		rescue
 			if(exec.status.eql? "Pendig")
