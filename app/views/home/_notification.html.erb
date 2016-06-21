@@ -1,0 +1,23 @@
+<div class="dropdown">
+  <%=button_to "Executions", home_events_path, class:"dropbtn", onclick:"myFunction()", remote: true%>
+  <!-- <button onclick="myFunction()" class="dropbtn">Executions</button> -->
+  <%if show_notification_number%>
+  <span class="button__badge">!</span>
+  <%end%>
+  <div id="myDropdown" class="dropdown-content">
+    <%get_latest_executions.each do |e|%>
+    	<%=link_to project_execution_path(id: e.execution.id, project_id: e.execution.project_id), style:"display:inline-block;width: 200px; height: 80px; position: relative;" do%>
+    		<span>
+        <%if !e.checked%>
+          <span class="button__badge">!</span>
+        <%end%>
+    		<b>Projeto:</b> <%=e.execution.project.name%><br>
+    		<b>Método:</b> <%=e.execution.method%><br>
+    		<b>Status:</b> <%=e.execution.status%><br>
+        <hr>
+    		</span>
+    	<%end%>
+    <%end%>
+  </div>
+</div>
+

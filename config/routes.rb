@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
 
+  resources :notifications
+
   devise_for :users
 
   get "executions/set_method_description", to: "executions#set_method_description", as: "set_method_descritpion"
+  post "home/events", to: "home#events", as: "home_events"
+  get "home/update_events", to: "home#update_events", as: "update_home_events"
   
   resources :projects do
     resources :executions, except: [:edit, :index]      

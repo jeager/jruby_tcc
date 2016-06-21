@@ -147,6 +147,7 @@ class MlMethods
 			  puts "corrects" + initial_eval.correct.to_s
 				puts "total" + initial_eval.numInstances.to_s
 			  execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => ((eval.correct/eval.numInstances)*100))
+			  execution.notification.update(checked: false)
 
 			end
 		rescue

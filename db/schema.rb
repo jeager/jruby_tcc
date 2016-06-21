@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160617210103) do
+ActiveRecord::Schema.define(version: 20160621172913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,17 @@ ActiveRecord::Schema.define(version: 20160617210103) do
   end
 
   add_index "executions", ["project_id"], name: "index_executions_on_project_id", using: :btree
+
+  create_table "notifications", force: :cascade do |t|
+    t.integer  "execution_id"
+    t.boolean  "checked"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "user_id"
+  end
+
+  add_index "notifications", ["execution_id"], name: "index_notifications_on_execution_id", using: :btree
+  add_index "notifications", ["user_id"], name: "index_notifications_on_user_id", using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.string   "name"
@@ -62,5 +73,7 @@ ActiveRecord::Schema.define(version: 20160617210103) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   add_foreign_key "executions", "projects"
+  add_foreign_key "notifications", "executions"
+  add_foreign_key "notifications", "users"
   add_foreign_key "projects", "users"
 end

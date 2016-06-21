@@ -1,3 +1,17 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+# Close the dropdown menu if the user clicks outside of it
+
+myFunction = ->
+  document.getElementById('myDropdown').classList.toggle 'show'
+  return
+
+window.onclick = (event) ->
+  if !event.target.matches('.dropbtn')
+    dropdowns = document.getElementsByClassName('dropdown-content')
+    i = undefined
+    i = 0
+    while i < dropdowns.length
+      openDropdown = dropdowns[i]
+      if openDropdown.classList.contains('show')
+        openDropdown.classList.remove 'show'
+      i++
+  return

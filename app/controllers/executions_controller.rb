@@ -34,6 +34,7 @@ class ExecutionsController < ApplicationController
     respond_to do |format|
       if save
         if @execution.save
+          Notification.create(user_id: current_user.id, execution_id: @execution.id, checked: false)
           MlMethods.new.create_thread @execution
           flash[:notice] = 'Execution was successfully created.'
           format.html { redirect_to [@project,@execution]}

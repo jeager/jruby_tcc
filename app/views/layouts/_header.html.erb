@@ -16,6 +16,11 @@
 	      <%end%>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
+	      	<li id="notifications">
+		      	<%if user_signed_in?%>
+		        	<%=render partial: '/home/notification'%>
+		        <%end%>
+	        </li>
 	        <li>
 	        	<%if user_signed_in?%>
 	        		<%=link_to "Logout", destroy_user_session_path, :method => :delete%>
