@@ -153,10 +153,12 @@ class MlMethods
 		rescue
 			if(exec.status.eql? "Pendig")
 				@execution.update(:status =>'Falhou, tentando novamente')
+				execution.notification.update(checked: false)
 				@execution.reload
 				create_thread @execution
 			elsif (exec.status.eql? "Falhou, tentando novamente")
 				@execution.update(:status =>'Falhou.')
+				execution.notification.update(checked: false)
 			end
 		end
 	end
