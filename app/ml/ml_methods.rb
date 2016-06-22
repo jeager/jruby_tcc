@@ -67,6 +67,7 @@ class MlMethods
 
 		# # Search algorithm
 		search = Ranker.new
+		search.setThreshold(0.005)
 
 		filter = Weka::Filter::Supervised::Attribute::AttributeSelection.new
 
@@ -146,7 +147,7 @@ class MlMethods
 			  eval = execute_with_knn(results)
 			  puts "corrects" + initial_eval.correct.to_s
 				puts "total" + initial_eval.numInstances.to_s
-			  execution.update(:status => "Done", :selected_features => features.join(","), :acuracy => ((eval.correct/eval.numInstances)*100))
+			  execution.update(:status => "Done", :selected_features => features.join(" ,"), :acuracy => ((eval.correct/eval.numInstances)*100))
 			  execution.notification.update(checked: false)
 
 			end
@@ -158,7 +159,7 @@ class MlMethods
 				create_thread @execution
 			elsif (exec.status.eql? "Falhou, tentando novamente")
 				@execution.update(:status =>'Falhou.')
-				execution.notification.update(checked: false)
+				execution.notification.update(checked: false)	
 			end
 		end
 	end
