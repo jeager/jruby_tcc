@@ -1,6 +1,6 @@
 class Project < ActiveRecord::Base
   belongs_to :user
-  has_many :executions, :dependent => :delete_all
+  has_many :executions, :dependent => :destroy
   mount_uploader :attachment, AttachmentUploader
   validates_presence_of :attachment
 

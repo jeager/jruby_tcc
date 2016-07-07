@@ -11,8 +11,8 @@ class ExecutionsController < ApplicationController
   def new
     @execution = Execution.new
     @project = Project.find_by_id(params[:project_id])
-    @description = Utils.get_description "Filter Method"
-    @method = "Filter Method"
+    @description = Utils.get_description MlMethods.get_models.second
+    @method = MlMethods.get_models.second
   end
 
   # POST /executions
@@ -82,10 +82,11 @@ class ExecutionsController < ApplicationController
   # DELETE /executions/1
   # DELETE /executions/1.json
   def destroy
+    project = @execution.project
     @execution.destroy
     flash[:notice] = 'Execução removida com sucesso' 
     respond_to do |format|
-      format.html { redirect_to project_executions_url}
+      format.html { redirect_to project}
       format.json { head :no_content }
     end
   end
